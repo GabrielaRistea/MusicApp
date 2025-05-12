@@ -1,0 +1,99 @@
+﻿@model Music_App.Models.Genre
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<style>
+    body {
+        background-color: #121212;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .create-title {
+        color: white;
+        font-size: 40px;
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .form-wrapper {
+        background-color: #10b65c;
+        padding: 40px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 500px;
+        margin: 40px auto;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    label {
+        font-weight: 600;
+        color: white;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: none;
+        padding: 10px;
+        margin-top: 5px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .btn-submit {
+        background-color: #1db954;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        font-size: 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        width: 100%;
+    }
+
+        .btn-submit:hover {
+            background-color: #159944;
+        }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: white;
+        text-decoration: underline;
+    }
+
+    .text-danger {
+        color: #ff4c4c;
+    }
+</style>
+
+<div class="create-title">Create Genre</div>
+
+<div class="form-wrapper">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Type" class="control-label"></label>
+            <input asp-for="Type" class="form-control" />
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn-submit" />
+        </div>
+    </form>
+
+    <a asp-action="Index" class="back-link">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

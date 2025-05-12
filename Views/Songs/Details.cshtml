@@ -1,0 +1,97 @@
+﻿@model Music_App.DTOs.SongDTO
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .title {
+            text-align: center;
+            color: white;
+        }
+
+        .form-wrapper {
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container {
+            background: #1DB954;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .detail-item {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            display: block;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<div class="form-wrapper">
+    <div class="form-container">
+        <div class="title">
+            <h2>Song Details</h2>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.Name)</span>
+            <span>@Html.DisplayFor(model => model.Name)</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.Duration)</span>
+            <span>@Html.DisplayFor(model => model.Duration)</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.ReleaseDate)</span>
+            <span>@Html.DisplayFor(model => model.ReleaseDate)</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.Link)</span>
+            <span>@Html.DisplayFor(model => model.Link)</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.IdAlbum)</span>
+            <span>@ViewBag.AlbumTitle</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.ArtistNames)</span>
+            <span>@Html.DisplayFor(model => model.ArtistNames)</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.GenreTypes)</span>
+            <span>@Html.DisplayFor(model => model.GenreTypes)</span>
+        </div>
+        <div class="text-center">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="back-link">Edit</a>
+            <a asp-action="Index" class="back-link">Back to List</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,119 @@
+﻿@model Music_App.Models.Album
+
+@{
+    ViewData["Title"] = "New Album";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .form-wrapper {
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container {
+            background: #1DB954;
+            padding: 30px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+            .form-container h2 {
+                text-align: center;
+                color: white;
+                margin-bottom: 25px;
+            }
+
+        label {
+            display: block;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #f5f5f5;
+            color: #121212;
+        }
+
+        .submit-button {
+            background-color: #169944;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+            .submit-button:hover {
+                background-color: #117a35;
+            }
+
+        .text-danger {
+            color: #fff0f0;
+            font-size: 14px;
+        }
+
+        a.back-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-wrapper">
+        <div class="form-container">
+            <h2>Add New Album</h2>
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <label asp-for="Title"></label>
+                <textarea asp-for="Title" ></textarea>
+                <span asp-validation-for="Title" class="text-danger"></span>
+
+                <label asp-for="Duration"></label>
+                <textarea asp-for="Duration" ></textarea>
+                <span asp-validation-for="Duration" class="text-danger"></span>
+
+                <label asp-for="ImageFile"></label>
+                <input asp-for="ImageFile" type="file"/>
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+
+                <label asp-for="ReleaseDate"></label>
+                <input asp-for="ReleaseDate" type="date" />
+                <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+
+                <label asp-for="IdArtist"></label>
+                <select asp-for="IdArtist" asp-items="ViewBag.IdArtist"></select>
+                <span asp-validation-for="IdArtist" class="text-danger"></span>
+
+                <button type="submit" class="submit-button">Create Album</button>
+            </form>
+            <a asp-action="Index" class="back-link">Back to List</a>
+        </div>
+    </div>
+</body>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

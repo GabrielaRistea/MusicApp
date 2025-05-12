@@ -1,0 +1,149 @@
+﻿@model IEnumerable<Music_App.Models.Album>
+
+@{
+    ViewData["Title"] = "Albume";
+}
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Albume</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .add-button-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .add-button {
+            padding: 10px 16px;
+            background-color: #1DB954;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+            .add-button:hover {
+                background-color: #169944;
+            }
+
+        table {
+            width: 95%;
+            margin: 0 auto 40px;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            background-color: #1e1e1e;
+        }
+
+        thead {
+            background-color: #2a2a2a;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        th {
+            color: #1DB954;
+            font-size: 16px;
+            border-bottom: 2px solid #1DB954;
+        }
+
+        td {
+            font-size: 14px;
+            border-bottom: 1px solid #333;
+        }
+
+        tr:hover {
+            background-color: #2e2e2e;
+        }
+
+        /* img.album-img { */
+        /*     width: 20px; */
+        /*     height: 20px; */
+        /*     object-fit: cover; */
+        /*     border-radius: 10px; */
+        /* } */
+
+        img {
+            border: 0;
+            width: 60px;
+            height: auto;
+        }
+
+        .action-links a {
+            margin: 0 5px;
+            text-decoration: none;
+            padding: 6px 10px;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            transition: background-color 0.2s;
+        }
+
+            .action-links a:hover {
+                background-color: #555;
+            }
+    </style>
+</head>
+
+<h1>Albums</h1>
+
+<div class="add-button-container">
+    <a asp-action="Create" class="add-button">Add New Album</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.First().Image)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Title)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Duration)</th>
+            <th>@Html.DisplayNameFor(model => model.First().ReleaseDate)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Artist)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                
+                <td>
+                    <img src="@(item.Image != null
+                ? $"data:image/jpeg;base64,{Convert.ToBase64String(item.Image)}"
+                : Url.Content("~/images/default-artist.png"))"
+                         alt="@item.Title" />
+                </td>
+
+               
+                <td>@item.Title</td>
+                <td>@item.Duration</td>
+                
+                <td>@item.ReleaseDate.ToShortDateString()</td>
+                <td>@item.Artist?.Name</td>
+                <td class="action-links">
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
