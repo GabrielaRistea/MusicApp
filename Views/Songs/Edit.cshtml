@@ -1,0 +1,136 @@
+﻿@model Music_App.DTOs.SongDTO
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .title {
+            text-align: center;
+            color: white;
+        }
+
+        .form-wrapper {
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container {
+            background: #1DB954;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: white;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .submit-button {
+            padding: 10px;
+            background-color: #169944;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+            .submit-button:hover {
+                background-color: #117a35;
+            }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: white;
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+
+
+
+<div class="form-wrapper">
+    <div class="form-container">
+        <div class="title">
+            <h2>Edit Song</h2>
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+
+                <label asp-for="Duration" class="control-label"></label>
+                <input asp-for="Duration" class="form-control" />
+                <span asp-validation-for="Duration" class="text-danger"></span>
+
+                <label asp-for="ReleaseDate" class="control-label"></label>
+                <input asp-for="ReleaseDate" class="form-control" />
+                <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+
+
+                <label asp-for="Link" class="control-label"></label>
+                <input asp-for="Link" class="form-control" />
+                <span asp-validation-for="Link" class="text-danger"></span>
+
+
+                <label asp-for="IdAlbum" class="control-label"></label>
+                <select asp-for="IdAlbum" class="form-control" asp-items="ViewBag.IdAlbum"></select>
+                <span asp-validation-for="IdAlbum" class="text-danger"></span>
+
+                <label asp-for="Artists" class="form-label"></label>
+                <select asp-for="Artists" class="text-danger" asp-items="ViewBag.Artists" multiple></select>
+                <span asp-validation-for="Artists" class="text-danger"></span>
+
+                <label asp-for="Genres" class="form-label"></label>
+                <select asp-for="Genres" class="text-danger" asp-items="ViewBag.Genres" multiple></select>
+                <span asp-validation-for="Genres" class="text-danger"></span>
+
+
+                <button type="submit" class="submit-button">Edit Song</button>
+
+            </form>
+            <a asp-action="Index" class="back-link">Back to List</a>
+        </div>
+    </div>
+
+    @* <div> *@
+    @*     <a asp-action="Index">Back to List</a> *@
+    @* </div> *@
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }

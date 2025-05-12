@@ -1,0 +1,106 @@
+﻿@model Music_App.Models.Subscription
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<head>
+    <style>
+        .details-card {
+            background: #FFD700;
+            padding: 30px;
+            margin: 30px auto;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+            max-width: 600px;
+            color: black;
+            word-wrap: break-word; 
+            overflow-wrap: break-word; 
+        }
+
+            .details-card p {
+                font-size: 16px;
+                margin-bottom: 15px;
+                white-space: pre-wrap; 
+            }
+
+
+            .details-card h1, .details-card h4 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .details-card dt {
+                font-weight: bold;
+            }
+
+            .details-card dd {
+                font-size: 16px;
+                margin-bottom: 15px;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+
+            
+
+
+        .details-links {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+            .details-links a {
+                margin: 0 10px;
+                padding: 10px 15px;
+                background-color: white;
+                color: black;
+                border-radius: 5px;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+                .details-links a:hover {
+                    background-color: #f0f0f0;
+                }
+    </style>
+</head>
+
+<div class="details-card">
+    <h1>Details</h1>
+    <h4>Subscription</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.Duration)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.Duration)
+        </dd>
+
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+    </dl>
+
+    <div class="details-links">
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>

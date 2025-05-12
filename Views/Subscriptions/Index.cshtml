@@ -1,0 +1,116 @@
+﻿@model IEnumerable<Music_App.Models.Subscription>
+
+@{
+    ViewData["Title"] = "Subscriptions";
+}
+
+<head>
+    <style>
+        .title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+        }
+
+        .title {
+            color: white;
+            font-size: 22px;
+        }
+
+        .create-button {
+            padding: 10px 15px;
+            background-color: #FFD700;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+            .create-button:hover {
+                background-color: #FFC107;
+            }
+
+        .subscription-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 auto;
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        .subscription-card {
+            background: #FFD700;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            text-align: left;
+            padding: 25px;
+            margin-bottom: 20px;
+            color: black;
+        }
+
+            .subscription-card:hover{
+                background: #FFC107;
+            }
+
+            .subscription-card h3 {
+                margin-top: 0;
+                font-size: 18px;
+                text-align: center;
+            }
+
+            .subscription-card p {
+                margin: 8px 0;
+                font-size: 16px;
+            }
+
+        .card-buttons {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .card-button {
+            padding: 8px 12px;
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+            .card-button:hover {
+                background-color: #f0f0f0;
+            }
+    </style>
+</head>
+
+<div class="title-container">
+    <h1 class="title">Subscriptions</h1>
+    <a asp-action="Create" class="create-button">Create New</a>
+</div>
+
+<ul class="subscription-list">
+    @foreach (var item in Model)
+    {
+        <li class="subscription-card">
+            <h3>@item.Type</h3>
+            <p><strong>Preț:</strong> @item.Price €</p>
+            <p><strong>Durată:</strong> @item.Duration </p>
+            <p><strong>Descriere:</strong> @item.Description</p>
+
+            <div class="card-buttons">
+                <a asp-action="Edit" asp-route-id="@item.Id" class="card-button">Edit</a>
+                <a asp-action="Details" asp-route-id="@item.Id" class="card-button">Details</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="card-button">Delete</a>
+            </div>
+        </li>
+    }
+</ul>
