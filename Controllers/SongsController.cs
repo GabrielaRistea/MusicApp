@@ -5,6 +5,8 @@ using Music_App.Models;
 using Music_App.Services.Interfaces;
 using Music_App.DTOs;
 using Music_App.Services;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Music_App.Controllers;
 
@@ -13,13 +15,16 @@ public class SongsController : Controller
     private readonly ISongService _songService;
     private readonly IArtistService _artistService;
     private readonly IGenreService _genreService;
-    public SongsController(ISongService songService, IArtistService artistService, IGenreService genreService)
+    private readonly IPlaylistService _playlistService;
+    public SongsController(ISongService songService, IArtistService artistService, IGenreService genreService, IPlaylistService playlistService)
     {
         _songService = songService;
         _artistService = artistService;
         _genreService = genreService;
-    }
+        _playlistService = playlistService;
 
+    }
+    [AllowAnonymous]
     public IActionResult Index(string searchSong)
     {
         var songs = _songService.GetAllSongs()
@@ -28,6 +33,10 @@ public class SongsController : Controller
         var songgenres = _songService.GetAllSongGenres();
         var albums = _songService.GetAllAlbums();
         var playlistsongs = _songService.GetAllPlaylistSongs();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var playlists =  _playlistService.GetPlaylistsByUser(userId);
+        ViewBag.UserPlaylists = playlists;
+
         var reviews = _songService.GetAllReviews();
         ViewData["IdAlbum"] = new SelectList(albums, "Id", "Title");
         if (!String.IsNullOrEmpty(searchSong))
@@ -37,7 +46,7 @@ public class SongsController : Controller
 
             return View(songs);
     }
-
+    [AllowAnonymous]
     public IActionResult Details(int? id)
     {
         if (id == null)
@@ -54,7 +63,7 @@ public class SongsController : Controller
 
         return View(mapSong(song));
     }
-
+    [Authorize(Roles = "admin")]
     public IActionResult Create()
     {
         var artists = _artistService.GetAllArtists();
@@ -70,6 +79,7 @@ public class SongsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
     public IActionResult Create([Bind("Id,IdAlbum,Name,Duration,ReleaseDate,Link, Artists, Genres")] SongDTO songDto)
     {
         var song = mapSong(songDto);
@@ -77,7 +87,7 @@ public class SongsController : Controller
         _songService.AddSong(song);
         return RedirectToAction(nameof(Index));
     }
-
+    [Authorize(Roles = "admin")]
     public IActionResult Edit(int? id)
     {
         if (id == null)
@@ -104,6 +114,7 @@ public class SongsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
     public IActionResult Edit(int id, [Bind("Id,IdAlbum,Name,Duration,ReleaseDate,Link,Artists,Genres")] SongDTO songDto)
     {
         if (id != songDto.Id)
@@ -117,7 +128,7 @@ public class SongsController : Controller
         //{
         try
             {
-                _songService.UpdateSong(song);
+                _songService.UpdateSong(songDto);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -133,7 +144,7 @@ public class SongsController : Controller
             return RedirectToAction(nameof(Index));
 
     }
-
+    [Authorize(Roles = "admin")]
     public IActionResult Delete(int? id)
     {
         if (id == null)
@@ -153,6 +164,7 @@ public class SongsController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
     public IActionResult DeleteConfirmed(int id)
     {
         var song = _songService.GetSongById(id);
@@ -163,11 +175,54 @@ public class SongsController : Controller
         return RedirectToAction(nameof(Index));
     }
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult SongGroupByAlbum(int albumId)
     {
-        var song = _songService.GetAllSongsByAlbum(albumId).Select(s => mapSong(s)).ToList(); ;
-        
+        var song = _songService.GetAllSongsByAlbum(albumId).Select(s => mapSong(s)).ToList();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var playlists = _playlistService.GetPlaylistsByUser(userId);
+        ViewBag.UserPlaylists = playlists;
+
         return View(song);
+    }
+    [AllowAnonymous]
+    public IActionResult SongsByGenre(int Id)
+    {
+        var genreDto = _songService.GetAllSongsGroupedByGenre(Id);
+        var songs = _songService.GetAllSongs()
+            .Select(s => mapSong(s)).ToList();
+        var songartists = _songService.GetAllSongArtists();
+        var songgenres = _songService.GetAllSongGenres();
+        var albums = _songService.GetAllAlbums();
+        var playlistsongs = _songService.GetAllPlaylistSongs();
+        if (genreDto == null) return NotFound();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var playlists = _playlistService.GetPlaylistsByUser(userId);
+        ViewBag.UserPlaylists = playlists;
+        return View(genreDto);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> AddToPlaylist(int songId, int playlistId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var playlist = _playlistService.GetPlaylistById(playlistId);
+        if (playlist == null || playlist.IdUser != userId)
+            return Forbid();
+
+        bool exists = await _playlistService.PlaylistSongExistsAsync(playlistId, songId);
+        if (exists)
+        {
+            TempData["Message"] = "Already added to playlist";
+        }
+        else
+        {
+            await _playlistService.AddSongToPlaylistAsync(playlistId, songId);
+            TempData["Message"] = "Added to playlist";
+        }
+        //return RedirectToAction("Index");
+        return Redirect(Request.Headers["Referer"].ToString());
     }
 
     private SongDTO mapSong(Song s)

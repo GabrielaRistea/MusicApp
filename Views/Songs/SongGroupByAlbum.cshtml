@@ -193,11 +193,25 @@
 
     </style>
 </head>
+@if (User.IsInRole("admin"))
+{
+    <div class="title-container">
+        <h2 class="title">Songs</h2>
+        <a asp-action="Create" class="add-song-button"><i class="fa-solid fa-plus"></i> Add New Song</a>
+    </div>
+}
 
-<div class="title-container">
-    <h2 class="title">Songs</h2>
-    <a asp-action="Create" class="add-song-button"><i class="fa-solid fa-plus"></i> Add New Song</a>
-</div>
+@if (TempData["Message"] != null)
+{
+    <div id="Message" style="color: white; background-color: #1DB954; padding: 10px; border-radius: 5px; margin-top: 10px;">
+        @TempData["Message"]
+    </div>
+    <script>
+        setTimeout(function() {
+            document.getElementById("Message").style.display = 'none';
+        }, 3000);
+    </script>
+}
 
 <div class="songs-container">
     <form asp-action="SongGroupByAlbum" method="get">
@@ -210,6 +224,22 @@
         {
             <li class="song-item">
                 <span class="song-info">@song.Name (@song.Duration) </span>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form asp-action="AddToPlaylist" method="post" style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <input type="hidden" name="songId" value="@song.Id" />
+                        <select name="playlistId" required style="padding: 6px 10px; border-radius: 6px; border: none; background-color: white; color: black; min-width: 150px;">
+                            <option value="">Select playlist</option>
+                            @foreach (var playlist in ViewBag.UserPlaylists as List<Music_App.Models.Playlist>)
+                            {
+                                <option value="@playlist.Id">@playlist.Name</option>
+                            }
+                        </select>
+                        <button type="submit" class="add-to-playlist">Add</button>
+                    </form>
+                }
+
                 <span>@ViewBag.AlbumTitle</span>
                 <div class="song-meta">
                     @if (song.ArtistNames != null && song.ArtistNames.Any())
@@ -241,11 +271,15 @@
 
                 @* <a href="@song.Link" target="_blank" class="add-to-playlist">Listen</a> *@
                 <iframe class="frame" src="@song.Link" allowfullscreen></iframe>
-                <div class="actions">
-                    <a asp-action="Edit" asp-route-id="@song.Id" class="edit-button">Edit</a>
-                    <a asp-action="Details" asp-route-id="@song.Id" class="details-button">Details</a>
-                    <a asp-action="Delete" asp-route-id="@song.Id" class="delete-button">Delete</a>
-                </div>
+                <a asp-controller="Reviews" asp-action="Index" asp-route-songId="@song.Id" class="add-to-playlist">Comments</a>
+                @if (User.IsInRole("admin"))
+                {
+                    <div class="actions">
+                        <a asp-action="Edit" asp-route-id="@song.Id" class="edit-button">Edit</a>
+                        <a asp-action="Details" asp-route-id="@song.Id" class="details-button">Details</a>
+                        <a asp-action="Delete" asp-route-id="@song.Id" class="delete-button">Delete</a>
+                    </div>
+                }
             </li>
         }
     </ul>

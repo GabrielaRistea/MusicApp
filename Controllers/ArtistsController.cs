@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +22,13 @@ namespace Music_App.Controllers
             _artistService = artistService;
             //_albumService = albumService;
         }
+        [AllowAnonymous]
         public IActionResult Index()
         {
             var artist = _artistService.GetAllArtists();
             return View(artist);
         }
+        [AllowAnonymous]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -42,6 +45,7 @@ namespace Music_App.Controllers
 
             return View(artist);
         }
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             var artist = _artistService.GetAllArtists();
@@ -49,6 +53,7 @@ namespace Music_App.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("Id,Name,ImageFile,Description")] Artist artist)
         {
             var artists = _artistService.GetAllArtists();
@@ -56,6 +61,7 @@ namespace Music_App.Controllers
             await _artistService.AddArtistAsync(artist);
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = "admin")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -76,6 +82,7 @@ namespace Music_App.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> EditAsync(int id, [Bind("Id,Name,ImageFile,Description")] Artist artist)
         {
             if (id != artist.Id)
@@ -106,6 +113,7 @@ namespace Music_App.Controllers
             // return View(genre);
 
         }
+        [Authorize(Roles = "admin")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -124,6 +132,7 @@ namespace Music_App.Controllers
         }
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public IActionResult DeleteConfirmed(int id)
         {
             var artist = _artistService.GetArtistById(id);

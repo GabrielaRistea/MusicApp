@@ -1,0 +1,348 @@
+﻿@using Music_App.DTOs
+@model GenreDto
+
+@{
+    ViewData["Title"] = "SongsByGenre";
+}
+
+<h1>SongsByGenre</h1>
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Melodii</title>
+    <link rel="stylesheet" href="~/css/style.css">
+    <style>
+        .title-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 90%;
+            max-width: 1000px;
+            margin-top: 20px;
+        }
+
+        .title {
+            font-size: 24px;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .add-song-button {
+            padding: 8px 12px;
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .add-song-button:hover {
+                background-color: #169944;
+            }
+
+        .songs-container {
+            background: #1DB954;
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            flex-grow: 1;
+            padding-bottom: 20px;
+            border-bottom: 5px solid #0f7a3e;
+        }
+
+            .songs-container h2 {
+                font-size: 24px;
+                margin-bottom: 15px;
+            }
+
+        .song-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .song-item {
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 5px 0;
+            border-radius: 8px;
+            transition: background 0.3s ease-in-out;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+
+            .song-item:hover {
+                background: rgba(255, 255, 255, 0.4);
+                /*  cursor: pointer; */
+            }
+
+        .song-info {
+            flex-grow: 1;
+            text-align: left;
+            padding-left: 10px;
+        }
+
+        .add-to-playlist {
+            padding: 5px 10px;
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .add-to-playlist:hover {
+                background-color: #169944;
+            }
+
+        .frame {
+            width: 210px;
+            height: 170px;
+        }
+
+
+
+
+        .modal {
+            z-index: 1;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .modal-content {
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        .edit {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: white;
+            text-decoration: underline;
+        }
+
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            color: black; /* culoarea textului introdus */
+            background-color: white; /* fundal alb pentru contrast */
+            width: 60%;
+            max-width: 300px;
+            margin-right: 10px;
+        }
+
+        .song-meta {
+            display: flex;
+            flex-direction: column;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .meta-section {
+            margin-top: 5px;
+        }
+
+        .meta-list {
+            display: inline;
+            margin-left: 5px;
+        }
+
+        .meta-item {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-right: 6px;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .playlist-form {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .playlist-form-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .playlist-dropdown {
+            padding: 6px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .playlist-add-button {
+            padding: 6px 12px;
+            background-color: #0f7a3e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s ease-in-out;
+        }
+
+            .playlist-add-button:hover {
+                background-color: #0d6332;
+            }
+    </style>
+</head>
+
+<div class="title-container">
+    @* <h2 class="title">Songs</h2> *@
+    @if (TempData["Message"] != null)
+    {
+        <div id="Message" style="color: white; background-color: #1DB954; padding: 10px; border-radius: 5px; margin-top: 10px;">
+            @TempData["Message"]
+        </div>
+        <script>
+            setTimeout(function() {
+                document.getElementById("Message").style.display = 'none';
+            }, 3000);
+        </script>
+    }
+    @if (User.IsInRole("admin"))
+    {
+        <a asp-action="Create" class="add-song-button"><i class="fa-solid fa-plus"></i> Add New Song</a>
+    }
+</div>
+
+<div class="songs-container">
+    @* <form asp-action="Index" method="get"> *@
+    @*     <label for="song-search">Search Song:</label> *@
+    @*     <input class="search-input" type="search" id="song-search" name="searchSong" value="@Context.Request.Query["searchSong"]" /> *@
+    @*     <button type="submit" class="add-song-button">Search</button> *@
+    @* </form> *@
+    <ul class="song-list">
+
+
+            
+        @foreach (var song in Model.Songs)
+        {
+            <li class="song-item">
+                <span class="song-info">@song.Name (@song.Duration) </span>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form asp-action="AddToPlaylist" method="post" style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <input type="hidden" name="songId" value="@song.Id" />
+                        <select name="playlistId" required style="padding: 6px 10px; border-radius: 6px; border: none; background-color: white; color: black; min-width: 150px;">
+                            <option value="">Select playlist</option>
+                            @foreach (var playlist in ViewBag.UserPlaylists as List<Music_App.Models.Playlist>)
+                            {
+                                <option value="@playlist.Id">@playlist.Name</option>
+                            }
+                        </select>
+                        <button type="submit" class="add-to-playlist">Add</button>
+                    </form>
+                }
+                @* @if (User.Identity.IsAuthenticated) *@
+                @* { *@
+                @*     <form asp-action="AddToPlaylist" method="post" class="playlist-form"> *@
+                @*         <input type="hidden" name="songId" value="@song.Id" /> *@
+                @*         <div class="playlist-form-controls"> *@
+                @*             <select name="playlistId" required class="playlist-dropdown"> *@
+                @*                 <option value="">Select playlist</option> *@
+                @*                 @foreach (var playlist in ViewBag.UserPlaylists as List<Music_App.Models.Playlist>) *@
+                @*                 { *@
+                @*                     <option value="@playlist.Id">@playlist.Name</option> *@
+                @*                 } *@
+                @*             </select> *@
+                @*             <button type="submit" class="playlist-add-button">Add</button> *@
+                @*         </div> *@
+                @*     </form> *@
+                @* } *@
+
+                <span>@ViewBag.AlbumTitle</span>
+                <div class="song-meta">
+                        @if (song.ArtistNames != null && song.ArtistNames.Count > 0)
+                    {
+                        <div class="meta-section">
+                            <strong>Artists:</strong>
+                            <span class="meta-list">
+                                @foreach (var artist in song.ArtistNames)
+                                {
+                                    <span class="meta-item">@artist</span>
+                                }
+                            </span>
+                        </div>
+                    }
+
+                    @* @if (song.GenreTypes != null && song.GenreTypes.Any()) *@
+                    @* { *@
+                    @*     <div class="meta-section"> *@
+                    @*         <strong>Genres:</strong> *@
+                    @*         <span class="meta-list"> *@
+                    @*             @foreach (var genre in song.GenreTypes) *@
+                    @*             { *@
+                    @*                 <span class="meta-item">@genre</span> *@
+                    @*             } *@
+                    @*         </span> *@
+                    @*     </div> *@
+                    @* } *@
+                </div>
+
+                @* <a href="@song.Link" target="_blank" class="add-to-playlist">Listen</a> *@
+                <iframe class="frame" src="@song.Link" allowfullscreen></iframe>
+                <a asp-controller="Reviews" asp-action="Index" asp-route-songId="@song.Id" class="add-to-playlist">Comments</a>
+
+                @if (User.IsInRole("admin"))
+                {
+                    <div class="actions">
+                        <a asp-action="Edit" asp-route-id="@song.Id" class="edit-button">Edit</a>
+                        <a asp-action="Details" asp-route-id="@song.Id" class="details-button">Details</a>
+                        <a asp-action="Delete" asp-route-id="@song.Id" class="delete-button">Delete</a>
+                    </div>
+                }
+            </li>
+        }
+ 
+    </ul>
+</div>
+
+
