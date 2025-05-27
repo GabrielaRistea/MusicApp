@@ -1,0 +1,214 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <style>
+
+        .title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+        }
+
+        .title {
+            color: white;
+            text-align: center;
+        }
+
+        h1 {
+            color: white;
+        }
+
+        .add-button {
+            padding: 8px 12px;
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .add-button:hover {
+            background-color: #169944;
+        }
+
+        .card-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 25px;
+            background-color: #1DB954;
+            margin: 20px auto;
+            align-items: center;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            text-align: center;
+            padding: 15px;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            width: 90%;
+            max-width: 600px;
+            color: white;
+        }
+
+        .card i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            color: white;
+        }
+
+            .modal-content input {
+                width: 100%;
+                padding: 10px;
+                margin: 15px 0;
+                border: none;
+                border-radius: 5px;
+                color: black;
+            }
+
+            .modal-content button {
+                padding: 10px 20px;
+                background-color: #1DB954;
+                border: none;
+                border-radius: 5px;
+                color: white;
+                cursor: pointer;
+            }
+
+                .modal-content button:hover {
+                    background-color: #169944;
+                }
+
+        .close {
+            float: right;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+
+    </style>
+
+    <script>
+        // Open the popup
+        function openModal() {
+            document.getElementById("playlistModal").style.display = "flex";
+        }
+
+        // Close the popup
+        function closeModal() {
+            document.getElementById("playlistModal").style.display = "none";
+        }
+    </script>
+
+</head>
+
+@if (TempData["Error"] != null)
+{
+    <div id="Error" class="alert alert-success">@TempData["Error"]</div>
+    <script>
+        setTimeout(function() {
+            document.getElementById("Error").style.display = 'none';
+        }, 3000);
+    </script>
+}
+
+<div class="title-container">
+    <h1 class="title">Your Playlists</h1>
+    <a class="add-button" onclick="openModal()">
+        <i class="fa-solid fa-plus"></i> Add New Playlist
+    </a>
+</div>
+
+ <div class="card-grid"> 
+    @foreach (var playlist in Model)
+    {
+        @* <div class="card" style="position: relative;"> *@
+        @* <a asp-controller="Playlists" asp-action="Details" asp-route-Id="@playlist.Id" class="card"> *@
+        @*     <i class="fa-solid fa-music"></i> *@
+        @*     <h3>@playlist.Name</h3> *@
+        @* </a> *@
+
+        @*     <form asp-action="DeleteUserPlaylist" asp-controller="Playlists" method="post" *@
+        @*       style="position: absolute; bottom: 10px; right: 10px; margin: 0;"> *@
+        @*     <input type="hidden" name="id" value="@playlist.Id" /> *@
+        @*     <button type="submit" title="Delete playlist" *@
+        @*             style="background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer; padding: 0;"> *@
+        @*         <i class="fa-solid fa-trash"></i> *@
+        @*     </button> *@
+        @* </form> *@
+        @* </div> *@
+        <div class="card" style="position: relative; display: flex; justify-content: space-between; align-items: center;">
+            <a asp-controller="Playlists" asp-action="Details" asp-route-Id="@playlist.Id" style="flex-grow: 1; text-decoration: none; color: white;">
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <i class="fa-solid fa-music"></i>
+                    <h3>@playlist.Name</h3>
+                </div>
+            </a>
+
+            <form asp-action="DeleteUserPlaylist" asp-controller="Playlists" method="post"
+                  style="margin-left: 500px;">
+                <input type="hidden" name="id" value="@playlist.Id" />
+                <button type="submit" title="Delete playlist"
+                        style="background: transparent; border: none; color: white; font-size: 1.5rem; cursor: pointer;">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </form>
+        </div>
+    }
+ </div> 
+
+
+<div id="playlistModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">✖</span>
+        <h2>Create New Playlist</h2>
+        <form id="createPlaylistForm" method="post" asp-action="Create" asp-controller="Playlists">
+            <input type="text" name="Name" id="playlistName" placeholder="Enter playlist name" required />
+            <input type="hidden" name="Duration" value="0:00" />
+            <button type="submit">Save Playlist</button>
+        </form>
+    </div>
+</div>
+

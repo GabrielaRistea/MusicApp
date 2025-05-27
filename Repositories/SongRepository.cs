@@ -109,7 +109,29 @@ namespace Music_App.Repositories
                 .ToList();
         }
 
+        public Genre GetSongByGenre(int genreId)
+        {
+            return _context.Genres
+                .Include(a => a.SongGenres)
+                .ThenInclude(ab => ab.Song)
+                .ThenInclude(ab => ab.SongArtists)
+                .ThenInclude(ab => ab.Artist)
+                .FirstOrDefault(a => a.Id == genreId);
+        }
 
+        public List<Genre> GetAllGenresWithSongs()
+        {
+            return _context.Genres
+                .Include(g => g.SongGenres)
+                    .ThenInclude(sg => sg.Song)
+                        .ThenInclude(s => s.SongArtists)
+                            .ThenInclude(sa => sa.Artist)
+                .Include(g => g.SongGenres)
+                    .ThenInclude(sg => sg.Song)
+                        .ThenInclude(s => s.SongGenres)
+                            .ThenInclude(sg => sg.Genre)
+                .ToList();
+        }
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using Music_App.Models;
+﻿using Music_App.DTOs;
+using Music_App.Models;
 
 namespace Music_App.Services.Interfaces
 {
@@ -6,7 +7,7 @@ namespace Music_App.Services.Interfaces
     {
         Song GetSongById(int id);
         void AddSong(Song song);
-        void UpdateSong(Song song);
+        void UpdateSong(SongDTO songDto);
         void DeleteSong(int id);
         Song GetSongAndRelatedById(int id);
         List<Song> GetAllSongs();
@@ -17,5 +18,6 @@ namespace Music_App.Services.Interfaces
         List<Review> GetAllReviews();
         bool SongExists(int id);
         List<Song> GetAllSongsByAlbum(int albumId);
+        GenreDto GetAllSongsGroupedByGenre(int genreId);
     }
 }

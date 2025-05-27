@@ -154,50 +154,97 @@
         }
 
         .search-input {
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            color: black; /* culoarea textului introdus */
-            background-color: white; /* fundal alb pentru contrast */
-            width: 60%;
-            max-width: 300px;
-            margin-right: 10px;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        color: black; /* culoarea textului introdus */
+        background-color: white; /* fundal alb pentru contrast */
+        width: 60%;
+        max-width: 300px;
+        margin-right: 10px;
         }
-    
+
         .song-meta {
-            display: flex;
-            flex-direction: column;
-            margin-top: 5px;
-            font-size: 14px;
-            color: #fff;
+        display: flex;
+        flex-direction: column;
+        margin-top: 5px;
+        font-size: 14px;
+        color: #fff;
         }
 
         .meta-section {
-            margin-top: 5px;
+        margin-top: 5px;
         }
 
         .meta-list {
-            display: inline;
-            margin-left: 5px;
+        display: inline;
+        margin-left: 5px;
         }
 
         .meta-item {
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 2px 8px;
-            border-radius: 12px;
-            margin-right: 6px;
-            display: inline-block;
-            font-weight: 500;
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 2px 8px;
+        border-radius: 12px;
+        margin-right: 6px;
+        display: inline-block;
+        font-weight: 500;
         }
 
+        .playlist-form {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
 
+        .playlist-form-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .playlist-dropdown {
+            padding: 6px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .playlist-add-button {
+            padding: 6px 12px;
+            background-color: #0f7a3e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s ease-in-out;
+        }
+
+            .playlist-add-button:hover {
+                background-color: #0d6332;
+            }
     </style>
 </head>
 
 <div class="title-container">
     <h2 class="title">Songs</h2>
-    <a asp-action="Create" class="add-song-button"><i class="fa-solid fa-plus"></i> Add New Song</a>
+    @if (TempData["Message"] != null)
+    {
+        <div id="Message" style="color: white; background-color: #1DB954; padding: 10px; border-radius: 5px; margin-top: 10px;">
+            @TempData["Message"]
+        </div>
+        <script>
+            setTimeout(function() {
+                document.getElementById("Message").style.display = 'none';
+            }, 3000);
+        </script>
+    }
+    @if (User.IsInRole("admin"))
+    {
+        <a asp-action="Create" class="add-song-button"><i class="fa-solid fa-plus"></i> Add New Song</a>
+    }
 </div>
 
 <div class="songs-container">
@@ -211,6 +258,22 @@
         {
             <li class="song-item">
                 <span class="song-info">@song.Name (@song.Duration) </span>
+
+                @if (User.Identity.IsAuthenticated) 
+                 { 
+                     <form asp-action="AddToPlaylist" method="post" style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;"> 
+                         <input type="hidden" name="songId" value="@song.Id" /> 
+                         <select name="playlistId" required style="padding: 6px 10px; border-radius: 6px; border: none; background-color: white; color: black; min-width: 150px;"> 
+                             <option value="">Select playlist</option> 
+                             @foreach (var playlist in ViewBag.UserPlaylists as List<Music_App.Models.Playlist>) 
+                             { 
+                                 <option value="@playlist.Id">@playlist.Name</option> 
+                             } 
+                         </select> 
+                         <button type="submit" class="add-to-playlist">Add</button> 
+                    </form>  
+                }
+
                 <span>@ViewBag.AlbumTitle</span>
                 <div class="song-meta">
                     @if (song.ArtistNames != null && song.ArtistNames.Any())
@@ -240,13 +303,18 @@
                     }
                 </div>
 
-                @* <a href="@song.Link" target="_blank" class="add-to-playlist">Listen</a> *@
+                 @* <a href="@song.Link" target="_blank" class="add-to-playlist">Listen</a> *@
                 <iframe class="frame" src="@song.Link" allowfullscreen></iframe>
-                <div class="actions">
-                    <a asp-action="Edit" asp-route-id="@song.Id" class="edit-button">Edit</a>
-                    <a asp-action="Details" asp-route-id="@song.Id" class="details-button">Details</a>
-                    <a asp-action="Delete" asp-route-id="@song.Id" class="delete-button">Delete</a>
-                </div>
+                <a asp-controller="Reviews" asp-action="Index" asp-route-songId="@song.Id" class="add-to-playlist">Comments</a>
+
+                @if (User.IsInRole("admin"))
+                {
+                    <div class="actions">
+                        <a asp-action="Edit" asp-route-id="@song.Id" class="edit-button">Edit</a>
+                        <a asp-action="Details" asp-route-id="@song.Id" class="details-button">Details</a>
+                        <a asp-action="Delete" asp-route-id="@song.Id" class="delete-button">Delete</a>
+                    </div>
+                }
             </li>
         }
     </ul>

@@ -1,0 +1,51 @@
+﻿
+
+<style>
+
+    .logout-link {
+    background: none !important;
+    border: none !important;
+    color: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font: inherit !important;
+    text-decoration: none !important;
+    cursor: pointer;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.logout-link:hover {
+    color: #dddddd !important;
+    text-decoration: underline;
+}
+
+
+</style>
+
+@using Microsoft.AspNetCore.Identity
+@using Music_App.Models
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <li>
+        <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+            <i class="fa-solid fa-user"></i> Hello, @(UserManager.GetUserName(User)?.Split('@')[0])
+        </a>
+    </li>
+    <li>
+        <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")" style="display:inline;">
+            <button type="submit" class="logout-link">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </form>
+    </li>
+}
+else
+{
+    <li><a asp-area="Identity" asp-page="/Account/Register"><i class="fas fa-user-plus"></i> Register</a></li>
+    <li><a asp-area="Identity" asp-page="/Account/Login"><i class="fas fa-sign-in-alt"></i> Log In</a></li>
+}

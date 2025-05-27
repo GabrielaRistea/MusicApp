@@ -23,5 +23,7 @@ namespace Music_App.Repositories.Interfaces
         List<PlaylistSong> GetAllPlaylistSongs();
         List<Review> GetAllReviews();
         List<Song> GetSongByAlbum(int albumId);
+        Genre GetSongByGenre(int genreId);
+        List<Genre> GetAllGenresWithSongs();
     }
 }

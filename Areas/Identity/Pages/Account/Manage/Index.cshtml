@@ -1,0 +1,180 @@
+﻿@* @page *@
+@* @model IndexModel *@
+@* @{ *@
+@*     ViewData["Title"] = "Profile"; *@
+@*     ViewData["ActivePage"] = ManageNavPages.Index; *@
+@* } *@
+
+@* <h3>@ViewData["Title"]</h3> *@
+@* <partial name="_StatusMessage" for="StatusMessage" /> *@
+@* <div class="row"> *@
+@*     <div class="col-md-6"> *@
+@*         <form id="profile-form" method="post"> *@
+@*             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div> *@
+@*             <div class="form-floating mb-3"> *@
+@*                 <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled /> *@
+@*                 <label asp-for="Username" class="form-label"></label> *@
+@*             </div> *@
+@*             <div class="form-floating mb-3"> *@
+@*                 <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/> *@
+@*                 <label asp-for="Input.PhoneNumber" class="form-label"></label> *@
+@*                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span> *@
+@*             </div> *@
+@*             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button> *@
+@*         </form> *@
+@*     </div> *@
+@* </div> *@
+
+@* @section Scripts { *@
+@*     <partial name="_ValidationScriptsPartial" /> *@
+@* } *@
+
+
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<head>
+    <style>
+        .profile-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 30px 0 0 250px;
+            padding: 20px;
+            background: #1DB954;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+            .profile-container h3 {
+                color: white;
+                margin-bottom: 20px;
+            }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                color: white;
+                margin-bottom: 5px;
+                display: block;
+                font-weight: 500;
+            }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        .btn-primary {
+            background: #169944;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            width: 100%;
+        }
+
+            .btn-primary:hover {
+                background: #117a38;
+            }
+
+        .text-danger {
+            color: #ffcccc;
+            font-size: 0.9rem;
+        }
+
+        .profile-picture-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-upload {
+            display: inline-block;
+            background-color: white;
+            color: #1DB954;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+            .custom-file-upload:hover {
+                background-color: #e6e6e6;
+            }
+
+
+    </style>
+</head>
+
+<div class="profile-container">
+    <h3>@ViewData["Title"]</h3>
+    <partial name="_StatusMessage" for="StatusMessage" />
+    @if (!string.IsNullOrEmpty(Model.ProfilPicture))
+    {
+        <div class="profile-picture-wrapper">
+            <img src="data:image/jpeg;base64,@Model.ProfilPicture" class="profile-picture" />
+        </div>
+    }
+    <form id="profile-form" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+        <div class="form-group">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" class="form-control" disabled />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Input.PhoneNumber"></label>
+            <input asp-for="Input.PhoneNumber" class="form-control" />
+            <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+        </div>
+
+        @* <div class="form-group"> *@
+        @*     <label asp-for="Input.ImageFile" class="control-label">Profile Picture</label> *@
+        @*     <input asp-for="Input.ImageFile" class="form-control" type="file" accept="image/*" /> *@
+        @*     <span asp-validation-for="Input.ImageFile" class="text-danger"></span> *@
+        @* </div> *@
+        <div class="form-group">
+            <label>Profile Picture</label>
+
+            <label class="custom-file-upload">
+                <input asp-for="Input.ImageFile" type="file" accept="image/*" />
+                Change Profile Picture
+            </label>
+
+            <span asp-validation-for="Input.ImageFile" class="text-danger"></span>
+        </div>
+        
+
+        <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

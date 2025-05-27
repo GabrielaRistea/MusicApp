@@ -19,7 +19,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
             <div class="container-fluid wrapper">
-                <div class="logo"><a asp-area="" asp-controller="Home" asp-action="Index">Logo</a></div>
+                <div class="logo"><a asp-area="" asp-controller="Home" asp-action="Index">MusicApp</a></div>
                 <ul class="nav-links ">
                     @* <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label> *@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i>  Home</a></li>
@@ -27,13 +27,14 @@
                     <li><a asp-area="" asp-controller="Songs" asp-action="Index"><i class="fa-solid fa-music"></i>  Songs</a></li>
                     <li><a asp-area="" asp-controller="Albums" asp-action="Index"><i class="fa-solid fa-record-vinyl"></i> Albums</a></li>
                     <li><a asp-area="" asp-controller="Genres" asp-action="Index"><i class="fa-solid fa-bars-staggered"></i> Genres</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Playlists"><i class="fa-solid fa-repeat"></i>  Playlists</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="UserProfile"><i class="fa-solid fa-user"></i> User Profile</a></li>
+                    <li><a asp-area="" asp-controller="Playlists" asp-action="Index"><i class="fa-solid fa-repeat"></i>  Playlists</a></li>
+                    @* <li><a asp-area="" asp-controller="Home" asp-action="UserProfile"><i class="fa-solid fa-user"></i> User Profile</a></li> *@
                     <li><a asp-area="" asp-controller="Subscriptions" asp-action="Index"><i class="fa-solid fa-money-bills"></i> Upgrade</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Privacy"><i class="fa-solid fa-shield-halved"></i>  Privacy</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="LogIn"><i class="fa-solid fa-right-to-bracket"></i>  Log In</a></li>
+                    @* <li><a asp-area="" asp-controller="Home" asp-action="Privacy"><i class="fa-solid fa-shield-halved"></i>  Privacy</a></li> *@
+                    @* <li><a asp-area="" asp-controller="Home" asp-action="LogIn"><i class="fa-solid fa-right-to-bracket"></i>  Log In</a></li> *@
+                    <li><partial name = "_LoginPartial"/></li>
                 </ul>
-                <div class="user"><a asp-area="" asp-controller="Home" asp-action="UserProfile"><i class="fa-solid fa-user"></i>Hello, Gabriela</a></div>
+                @* <div class="user"><a asp-area="" asp-controller="Home" asp-action="UserProfile"><i class="fa-solid fa-user"></i>Hello, Gabriela</a></div> *@
             </div>
             </div>
         </nav>

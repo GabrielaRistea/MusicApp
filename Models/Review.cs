@@ -10,9 +10,9 @@ namespace Music_App.Models
         public string Comm { get; set; }
         public float Rating { get; set; }
         public DateTime Date { get; set; }
+        public string IdUser { get; set; }
 
-        [ForeignKey(nameof(User))]
-        public int IdUser { get; set; }
+        [ForeignKey(nameof(IdUser))]
         public User User { get; set; }
 
         [ForeignKey(nameof(Song))]

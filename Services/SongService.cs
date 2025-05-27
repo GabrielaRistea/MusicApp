@@ -3,6 +3,9 @@ using Music_App.Repositories.Interfaces;
 using Music_App.Repositories;
 using Music_App.Models;
 using Music_App.Services.Interfaces;
+using Music_App.DTOs;
+using static System.Reflection.Metadata.BlobBuilder;
+using Humanizer.Localisation;
 
 namespace Music_App.Services
 {
@@ -25,8 +28,10 @@ namespace Music_App.Services
             _songRepository.Save();
         }
 
-        public void UpdateSong(Song song)
+        public void UpdateSong(SongDTO songDto)
         {
+            var song = _songRepository.GetById(songDto.Id);
+            mapSong(songDto, song);
             _songRepository.Update(song);
             _songRepository.Save();
         }
@@ -83,6 +88,46 @@ namespace Music_App.Services
         public List<Song> GetAllSongsByAlbum(int albumId)
         {
             return _songRepository.GetSongByAlbum(albumId).ToList();
+        }
+
+        public GenreDto GetAllSongsGroupedByGenre(int genreId)
+        {
+            var genres = _songRepository.GetSongByGenre(genreId);
+            if (genres == null) return null;
+            var songs = genres.SongGenres?
+                    .Where(sg => sg.Song != null)
+                    .Select(sg => new SongDTO
+                    {
+                        Id = sg.Song.Id,
+                        IdAlbum = sg.Song.IdAlbum,
+                        Name = sg.Song.Name,
+                        Duration = sg.Song.Duration,
+                        ReleaseDate = sg.Song.ReleaseDate.ToUniversalTime(),
+                        Link = sg.Song.Link,
+                        Artists = sg.Song.SongArtists?.Select(sa => sa.Artist?.Id ?? 0).ToList() ?? [],
+                        ArtistNames = sg.Song.SongArtists?.Select(sa => sa.Artist?.Name ?? "").ToList() ?? [],
+                        Genres = sg.Song.SongGenres?.Select(sg => sg.Genre?.Id ?? 0).ToList() ?? [],
+                        GenreTypes = sg.Song.SongGenres?.Select(sg => sg.Genre?.Type ?? "").ToList() ?? [],
+                    }).ToList() ?? new List<SongDTO>();
+            return new GenreDto
+            {
+                Id = genres.Id,
+                Type = genres.Type,
+                Songs = songs,
+                SongTitle = songs.Select(b => b.Name).ToList(),
+            };
+        }
+
+
+        private void mapSong(SongDTO dto, Song song)
+        {
+            song.IdAlbum = dto.IdAlbum;
+            song.Name = dto.Name;
+            song.Duration = dto.Duration;
+            song.Link = dto.Link;
+            song.ReleaseDate = dto.ReleaseDate.ToUniversalTime();
+            song.SongArtists = dto.Artists.Select(a => new SongArtist() { IdArtist = a }).ToList();
+            song.SongGenres = dto.Genres.Select(g => new SongGenre() { IdGenre = g }).ToList();
         }
     }
 }

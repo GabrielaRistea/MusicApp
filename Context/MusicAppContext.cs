@@ -1,12 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Music_App.Models;
 
 namespace Music_App.Context
 {
-    public class MusicAppContext : DbContext
+    public class MusicAppContext : IdentityDbContext<User>
     {
         public MusicAppContext(DbContextOptions<MusicAppContext> options) : base(options) { }
-        public DbSet<User> Users { get; set; }
         public DbSet<Album> Albums { get; set; }
         public DbSet<Artist> Artists { get; set; }
         public DbSet<Genre> Genres { get; set; }
